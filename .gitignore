@@ -1,0 +1,7 @@
+*.meta
+.vscode
+*.csproj
+Temp
+Library
+Logs
+Assets/LFS
