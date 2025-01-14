@@ -1,6 +1,4 @@
-*.meta
 .vscode
-*.csproj
 Temp
-Library
 Logs
+Library
