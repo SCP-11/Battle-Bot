@@ -25,6 +25,8 @@ public class Car : MonoBehaviour
     public InputActionAsset inputActions;
     private Vector2 moveInput;
 
+    private pre_left_torque = 0;
+    private pro_right_torque = 0;
     // Start is called before the first frame update
     void Awake()
     {   
@@ -69,10 +71,10 @@ public class Car : MonoBehaviour
         Debug.Log(moveInput);
         float force = Mathf.Sqrt(Mathf.Pow(moveInput.x, 2) + Mathf.Pow(moveInput.y, 2)) * motorForce;
         if(moveInput.x == 0 && moveInput.y == 0){
-            wheelFL.brakeTorque = maxBrake;
-            wheelFR.brakeTorque = maxBrake;
-            wheelRL.brakeTorque = maxBrake;
-            wheelRR.brakeTorque = maxBrake;
+            // wheelFL.brakeTorque = maxBrake;
+            // wheelFR.brakeTorque = maxBrake;
+            // wheelRL.brakeTorque = maxBrake;
+            // wheelRR.brakeTorque = maxBrake;
             wheelFL.motorTorque = 0;
             wheelFR.motorTorque = 0;
             wheelRL.motorTorque = 0;
@@ -114,14 +116,36 @@ public class Car : MonoBehaviour
 
         Debug.Log("Left: " + left_accel + " Right: " + right_accel);
 
+        
+        // wheelFL.brakeTorque = brakeForce;
+        // wheelFR.brakeTorque = brakeForce;
+        // wheelRL.brakeTorque = brakeForce;
+        // wheelRR.brakeTorque = brakeForce;
+        if(left_accel < pre_left_accel){
+        wheelFL.brakeTorque = brakeForce;
+        wheelRL.brakeTorque = brakeForce;}
+        else{
         wheelFL.brakeTorque = 0;
-        wheelFR.brakeTorque = 0;
         wheelRL.brakeTorque = 0;
+
+        }
+        if(right_accel < pre_right_torque){
+        wheelFR.brakeTorque = brakeForce;
+        wheelRR.brakeTorque = brakeForce;
+        }
+        else{
+        wheelFR.brakeTorque = 0;
         wheelRR.brakeTorque = 0;
+
+        }
+        Debug.Log("Brake torque is " + wheelFL.brakeTorque );
         wheelRL.motorTorque = left_accel;
         wheelFL.motorTorque = left_accel;
         wheelRR.motorTorque = right_accel;
         wheelFR.motorTorque = right_accel;
+
+        pre_left_torque = left_accel;
+        pre_right_torque = right_accel;
 
         UpdateWheelModel();
     }
