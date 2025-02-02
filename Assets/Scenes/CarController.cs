@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 // using Vector2 = UnityEngine.Vector2;
 public class Car : MonoBehaviour
 {
+    public int ctr_device_id;
     public WheelCollider wheelFL;
     public WheelCollider wheelFR;
     public WheelCollider wheelRL;
@@ -25,13 +26,15 @@ public class Car : MonoBehaviour
     public InputActionAsset inputActions;
     private Vector2 moveInput;
 
-    private pre_left_torque = 0;
-    private pro_right_torque = 0;
+    private float pre_left_torque = 0;
+    private float pre_right_torque = 0;
     // Start is called before the first frame update
     void Awake()
     {   
-        driveAction = inputActions.FindActionMap("Player").FindAction("Drive");
-
+        // driveAction = inputActions.FindActionMap("Player").FindAction("Drive");
+        driveAction = GetComponent<PlayerInput>().actions.FindActionMap("Player").FindAction("Drive");
+        // PlayerInput playerInput = GetComponent<PlayerInput>();
+        // playerInput
     }
 
     private  void OnEnable()
@@ -42,6 +45,11 @@ public class Car : MonoBehaviour
     private void OnDisable()
     {
         driveAction.Disable();
+    }
+
+    void Start()
+    {
+        // GetComponent<PlayerInput>().SwitchCurrentControlScheme(InputSystem.devices[ctr_device_id]);
     }
     // Update is called once per frame
     void Update()
@@ -68,13 +76,13 @@ public class Car : MonoBehaviour
     void FixedUpdate(){
         moveInput = driveAction.ReadValue<Vector2>();
         float moveInput_magnitude = moveInput.magnitude;
-        Debug.Log(moveInput);
+        // Debug.Log(moveInput);
         float force = Mathf.Sqrt(Mathf.Pow(moveInput.x, 2) + Mathf.Pow(moveInput.y, 2)) * motorForce;
         if(moveInput.x == 0 && moveInput.y == 0){
-            // wheelFL.brakeTorque = maxBrake;
-            // wheelFR.brakeTorque = maxBrake;
-            // wheelRL.brakeTorque = maxBrake;
-            // wheelRR.brakeTorque = maxBrake;
+            wheelFL.brakeTorque = brakeForce;
+            wheelFR.brakeTorque = brakeForce;
+            wheelRL.brakeTorque = brakeForce;
+            wheelRR.brakeTorque = brakeForce;
             wheelFL.motorTorque = 0;
             wheelFR.motorTorque = 0;
             wheelRL.motorTorque = 0;
@@ -121,7 +129,7 @@ public class Car : MonoBehaviour
         // wheelFR.brakeTorque = brakeForce;
         // wheelRL.brakeTorque = brakeForce;
         // wheelRR.brakeTorque = brakeForce;
-        if(left_accel < pre_left_accel){
+        if(left_accel < pre_left_torque){
         wheelFL.brakeTorque = brakeForce;
         wheelRL.brakeTorque = brakeForce;}
         else{
@@ -138,7 +146,7 @@ public class Car : MonoBehaviour
         wheelRR.brakeTorque = 0;
 
         }
-        Debug.Log("Brake torque is " + wheelFL.brakeTorque );
+        Debug.Log("Brake torque is " + wheelFL.brakeTorque + " " + wheelFR.brakeTorque + " " + wheelRL.brakeTorque + " " + wheelRR.brakeTorque);
         wheelRL.motorTorque = left_accel;
         wheelFL.motorTorque = left_accel;
         wheelRR.motorTorque = right_accel;
