@@ -26,8 +26,7 @@ public class GameManager : MonoBehaviour
                     if(device is Keyboard){
                         keyBoard = device;
                     }
-                    if(playerInput.SwitchCurrentControlScheme(device) && (device is Gamepad))
-                    {
+                    if(playerInput.SwitchCurrentControlScheme(device) && (device is Gamepad|| device is Keyboard)){
                         Debug.Log("Device assigned to player input");
                         dev_id++;
                         break;
